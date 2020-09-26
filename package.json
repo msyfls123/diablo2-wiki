@@ -1,0 +1,40 @@
+{
+  "name": "diablo2-wiki",
+  "version": "0.1.0",
+  "description": "Electron Svelte App, for Diablo II Items !",
+  "main": "out/main.js",
+  "dependencies": {},
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^15.1.0",
+    "@rollup/plugin-html": "^0.2.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "@rollup/plugin-typescript": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.2.0",
+    "@typescript-eslint/parser": "^4.2.0",
+    "electron": "^10.1.2",
+    "eslint": "^7.9.0",
+    "rollup": "^2.28.2",
+    "tslib": "^2.0.1",
+    "typescript": "^4.0.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup --config rollup.config.js",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/msyfls123/diablo2-wiki.git"
+  },
+  "keywords": [
+    "electron",
+    "svelte",
+    "diablo2"
+  ],
+  "author": "kimi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/msyfls123/diablo2-wiki/issues"
+  },
+  "homepage": "https://github.com/msyfls123/diablo2-wiki#readme"
+}
