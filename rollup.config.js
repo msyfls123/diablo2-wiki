@@ -4,14 +4,20 @@ import typescript from '@rollup/plugin-typescript'
 import html from '@rollup/plugin-html'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
+import replace from '@rollup/plugin-replace'
 
-const outPath = path.join(__dirname, 'out')
+const base = path.resolve()
+const outPath = path.join(base, 'out')
 const outPagesPath = path.join(outPath, 'pages')
 
 const pages = fs.readdirSync('./src/renderer/pages')
 
 const common = {
+  treeshake: process.env.NODE_ENV === 'production',
   plugins: [
+    replace({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    }),
     nodeResolve({
       preferBuiltins: true,
       extensions: ['.js', '.json']
@@ -31,7 +37,7 @@ export default [
       dir: outPath,
       format: 'cjs'
     },
-    external: ['electron']
+    external: ['electron', 'electron-connect']
   },
   ...pages.map((filename) => ({
     ...common,
