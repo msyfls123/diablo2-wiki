@@ -1,11 +1,10 @@
 import * as rollup from 'rollup'
-import * as path from 'path'
 import gulp from 'gulp'
 import configs from '../rollup.config'
 import connect from 'electron-connect'
-const electron = connect.server.create()
+import { outDir } from './constants'
 
-const outDir = path.join(__dirname, '../out')
+const electron = connect.server.create()
 
 function watch(configs) {
   const watcher = rollup.watch(configs)
@@ -20,9 +19,10 @@ function watch(configs) {
         '**/*',
         '!pages/**/*',
       ], { cwd: outDir }, (done) => {
-        electron.restart([], () => {
-          // don't know why, just delay done
-          setTimeout(done, 1000)
+        electron.restart([], (state) => {
+          if (state === 'restarted') {
+            done()
+          }
         })
       })
     

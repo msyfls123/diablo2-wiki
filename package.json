@@ -13,10 +13,12 @@
     "@typescript-eslint/eslint-plugin": "^4.2.0",
     "@typescript-eslint/parser": "^4.2.0",
     "cross-env": "^7.0.2",
-    "electron": "^10.1.2",
+    "electron": "10.1.2",
+    "electron-builder": "^22.8.1",
     "electron-connect": "^0.6.3",
     "eslint": "^7.9.0",
     "gulp": "^4.0.2",
+    "rimraf": "^3.0.2",
     "rollup": "^2.28.2",
     "ts-node": "^9.0.0",
     "tslib": "^2.0.1",
@@ -26,6 +28,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cross-env NODE_ENV=development ts-node ./script/watch.ts",
     "build": "cross-env NODE_ENV=production rollup --config rollup.config.js",
+    "publish": "ts-node ./script/build.ts",
     "serve": "electron ."
   },
   "repository": {

@@ -1,0 +1,17 @@
+{
+  "version": "0.1.0",
+  "name": "diablo2-wiki",
+  "productName": "Diablo II Wiki",
+  "description": "Electron Svelte App, for Diablo II Items !",
+  "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/msyfls123/diablo2-wiki.git"
+  },
+  "author": "kimi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/msyfls123/diablo2-wiki/issues"
+  },
+  "homepage": "https://github.com/msyfls123/diablo2-wiki#readme"
+}

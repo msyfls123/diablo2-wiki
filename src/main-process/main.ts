@@ -1,5 +1,4 @@
 import { app, BrowserWindow } from 'electron'
-import { client } from 'electron-connect'
 
 app.whenReady().then(() => {
   const window = new BrowserWindow({
@@ -8,7 +7,7 @@ app.whenReady().then(() => {
     // titleBarStyle: 'hiddenInset',
   })
   if (process.env.NODE_ENV === 'development') {
-    client.create(window)
+    require('electron-connect').client.create(window)
   }
   window.loadURL(`file://${__dirname}/pages/main.html`)
   window.show()
