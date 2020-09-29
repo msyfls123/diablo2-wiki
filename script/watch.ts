@@ -1,6 +1,6 @@
 import * as rollup from 'rollup'
 import gulp from 'gulp'
-import configs from '../rollup.config'
+import configs from './rollup.config'
 import connect from 'electron-connect'
 import { outDir } from './constants'
 
@@ -11,6 +11,9 @@ function watch(configs) {
   let started = false
 
   watcher.on('event', event => {
+    if (/error/i.test(event.code)) {
+      console.error(event)
+    }
     if (event.code === 'END' && !started) {
       // Start browser process
       electron.start()
