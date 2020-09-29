@@ -1,4 +1,8 @@
-const header = document.createElement('h1')
-header.innerText = 'Welcome to Diablo II'
+import Toolbar from '../components/Toolbar.svelte'
 
-document.documentElement.appendChild(header)
+new Toolbar({
+  target: document.getElementById('main'),
+  props: {
+    name: 'Diablo'
+  },
+})
