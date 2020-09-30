@@ -8,6 +8,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import replace from '@rollup/plugin-replace'
 import css from "rollup-plugin-css-porter"
+import copy from 'rollup-plugin-copy'
 
 import {
   srcDir,
@@ -78,6 +79,17 @@ function genPageConfig(fileBaseName) {
 export default [
   {
     ...common,
+    plugins: [
+      ...common.plugins,
+      copy({
+        targets: [
+          {
+            src: path.join(srcDir, 'renderer/images/**/*'),
+            dest: path.join(outDir, 'images'),
+          },
+        ],
+      })
+    ],
     input: 'src/main-process/main.ts',
     output: {
       format: 'cjs',
