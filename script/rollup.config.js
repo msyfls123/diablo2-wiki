@@ -72,7 +72,11 @@ function genPageConfig(fileBaseName) {
       format: 'iife',
       dir: outPagesDir,
       sourcemap: isDev ? 'inline' : false,
+      globals: {
+        electron: "require('electron')",
+      },
     },
+    external: ['electron'],
   }
 }
 

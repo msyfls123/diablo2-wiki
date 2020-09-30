@@ -21,13 +21,22 @@
     debounceTime,
     distinctUntilChanged,
   } from 'rxjs/operators'
+  import { ipcRenderer } from 'electron'
+
   let year: number = 0
+  let messages = []
   export let name: string
+
   const input$ = new Subject()
   const result$ = input$.pipe(
     debounceTime(1500),
     distinctUntilChanged()
   )
+
+  ipcRenderer.on('tick', (e, msg) => {
+    messages = [msg]
+  })
+
   $: input$.next(year)
   $: {
     document.title = `${name} - Year ${year}`
@@ -54,4 +63,10 @@
   {/if}
 </p>
 <div class="test-bg"></div>
+
+<ul>
+  {#each messages as msg}
+    <li>{msg}</li>
+  {/each}
+</ul>
 
