@@ -13,6 +13,7 @@ import copy from 'rollup-plugin-copy'
 import {
   srcDir,
   outDir,
+  projectDir,
 } from './constants'
 
 const outPagesDir = path.join(outDir, 'pages')
@@ -22,6 +23,7 @@ const srcTemplateDir = path.join(srcDir, 'renderer/templates')
 const pages = fs.readdirSync(srcPagesDir).map(filename => path.basename(filename, '.ts'))
 const isDev = process.env.NODE_ENV === "development"
 const isProd = process.env.NODE_ENV === 'production'
+const useBundledRx = isDev
 
 const common = {
   treeshake: isProd,
@@ -57,10 +59,13 @@ function genPageConfig(fileBaseName) {
       html({
         template: path.join(srcTemplateDir, fileBaseName + '.html'),
         fileName: fileBaseName + '.html',
-        // externals: [
-        //   { type: 'js', file: "file1.js", pos: 'before' },
-        //   { type: 'js', file: "file2.js", pos: 'before' }
-        // ]
+        externals: [
+          ...(useBundledRx ? [{
+            type: 'js',
+            file: "../assets/rxjs.umd.min.js",
+            pos: 'before'
+          }] : []),
+        ]
       }),
       css({
         dest: path.join(outPagesDir, fileBaseName + '.css'),
@@ -74,33 +79,46 @@ function genPageConfig(fileBaseName) {
       sourcemap: isDev ? 'inline' : false,
       globals: {
         electron: "require('electron')",
+        ...(useBundledRx ? {
+          rxjs: 'rxjs',
+          'rxjs/operators': 'rxjs.operators',
+        } : {}),
       },
     },
-    external: ['electron'],
+    external: [
+      'electron',
+      ...(useBundledRx ? ['rxjs', 'rxjs/operators'] : []),
+    ],
   }
 }
 
-export default [
-  {
-    ...common,
-    plugins: [
-      ...common.plugins,
-      copy({
-        targets: [
-          {
-            src: path.join(srcDir, 'renderer/images/**/*'),
-            dest: path.join(outDir, 'images'),
-          },
-        ],
-      })
-    ],
-    input: 'src/main-process/main.ts',
-    output: {
-      format: 'cjs',
-      dir: outDir,
-      sourcemap: isDev ? 'inline' : false,
-    },
-    external: ['electron', 'electron-connect']
+const mainConfig = {
+  ...common,
+  plugins: [
+    ...common.plugins,
+    copy({
+      targets: [
+        {
+          src: path.join(srcDir, 'renderer/images/**/*'),
+          dest: path.join(outDir, 'images'),
+        },
+        ...(useBundledRx ? [{
+          src: path.join(projectDir, 'node_modules/rxjs/bundles/rxjs.umd.min.js'),
+          dest: path.join(outDir, 'assets'),
+        }]: [])
+      ],
+    })
+  ],
+  input: 'src/main-process/main.ts',
+  output: {
+    format: 'cjs',
+    dir: outDir,
+    sourcemap: isDev ? 'inline' : false,
   },
+  external: ['electron', 'electron-connect']
+}
+
+export default [
+  mainConfig,
   ...pages.map(genPageConfig)
 ];
