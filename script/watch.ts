@@ -19,8 +19,7 @@ function watch(configs) {
       electron.start()
       // Restart browser process
       gulp.watch([
-        '**/*',
-        '!pages/**/*',
+        'main.js',
       ], { cwd: outDir }, (done) => {
         electron.restart([], (state) => {
           if (state === 'restarted') {
@@ -31,7 +30,9 @@ function watch(configs) {
     
       // Reload renderer process
       gulp.watch([
-        'pages/**/*'
+        'pages/**/*',
+        'assets/**/*',
+        'images/**/*',
       ], { cwd: outDir }, (done) => {
         electron.reload()
         // 3000ms is hard coded in electron-connect

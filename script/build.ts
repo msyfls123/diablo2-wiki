@@ -15,7 +15,7 @@ const sourcePackagePath = path.join(projectDir, 'script/app.json')
 rimraf(distDir, {}, () => {
   fs.copyFileSync(sourcePackagePath, path.join(outDir, 'package.json'))
   build({
-    projectDir: config.directories.app,
+    projectDir: outDir,
     config,
     ...(isMacOS ? {
       mac: ['dmg'],
