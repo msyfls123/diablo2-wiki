@@ -25,6 +25,7 @@
 
   let year: number = 0
   let messages = []
+  let dbMsgs = []
   export let name: string
 
   const input$ = new Subject()
@@ -35,6 +36,11 @@
 
   ipcRenderer.on('tick', (e, msg) => {
     messages = [msg]
+  })
+
+  ipcRenderer.on('db-message', (e, msg) => {
+    console.log('data', msg)
+    dbMsgs = [...dbMsgs, msg]
   })
 
   $: input$.next(year)
@@ -65,8 +71,13 @@
 <div class="test-bg"></div>
 
 <ul>
-  {#each messages as msg}
+  {#each dbMsgs as msg}
     <li>{msg}</li>
   {/each}
 </ul>
 
+<ul>
+  {#each messages as msg}
+    <li>{JSON.stringify(msg)}</li>
+  {/each}
+</ul>
