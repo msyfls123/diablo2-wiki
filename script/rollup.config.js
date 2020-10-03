@@ -115,7 +115,13 @@ const mainConfig = {
     dir: outDir,
     sourcemap: isDev ? 'inline' : false,
   },
-  external: ['electron', 'electron-connect']
+  external: [
+    'electron',
+    'electron-connect',
+    'rxdb',
+    'leveldown',
+    'pouchdb-adapter-leveldb',
+  ]
 }
 
 export default [

@@ -23,6 +23,11 @@ const config: Configuration = {
   },
   win: {
     icon: path.join(projectDir, 'static/logo.ico'),
+  },
+  electronDownload: {
+    mirror: 'https://npm.taobao.org/mirrors/electron/',
+    version: '10.1.2',
+    strictSSL: false,
   }
 }
 
