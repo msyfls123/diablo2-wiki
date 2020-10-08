@@ -1,10 +1,14 @@
 import { DataBase } from '../utils/db'
 import path from 'path'
 import { app } from 'electron'
+import { Runes } from '../../constants/rune'
+import { isDevMode } from '../../constants'
+
+const shouldWipeOldDataBase = false
 
 export async function initializeDatabase(): Promise<DataBase> {
   const dbName = path.join(app.getPath('userData'), 'test-db')
-  const dbManager = new DataBase(dbName)
+  const dbManager = new DataBase(dbName, isDevMode && shouldWipeOldDataBase)
   await dbManager.whenReady
   const { db } = dbManager
   // create collection
@@ -12,24 +16,26 @@ export async function initializeDatabase(): Promise<DataBase> {
     version: 0,
     type: 'object',
     properties: {
-        key: {
-            type: 'string',
-            primary: true
-        },
-        value: {
-            type: 'string'
+      name: {
+          type: 'string',
+          primary: true
+      },
+      level: {
+        type: 'number',
+      },
+      runes: {
+        type: 'array',
+        items: {
+          type: 'number',
+          enum: Runes,
         }
+      }
     }
   }
   await db.collection({
     name: 'items',
-    schema: mySchema
+    schema: mySchema,
   })
 
-  // insert one document
-  // await db.items.insert({
-  //   key: 'foo',
-  //   value: 'bar'
-  // })
   return dbManager
 }

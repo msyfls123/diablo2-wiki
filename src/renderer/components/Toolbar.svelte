@@ -22,10 +22,15 @@
     distinctUntilChanged,
   } from 'rxjs/operators'
   import { ipcRenderer } from 'electron'
+  import { Rune } from '../../constants/rune'
 
   let year: number = 0
   let messages = []
-  let dbMsgs = []
+  let dbMsgs: Array<{
+    name: string
+    level: number
+    runes: Rune[]
+  }> = []
   export let name: string
 
   const input$ = new Subject()
@@ -39,8 +44,8 @@
   })
 
   ipcRenderer.on('db-message', (e, msg) => {
-    console.log('data', msg)
-    dbMsgs = [...dbMsgs, msg]
+    console.log(msg)
+    dbMsgs = [...dbMsgs, ...msg.map(JSON.parse)]
   })
 
   $: input$.next(year)
@@ -72,7 +77,16 @@
 
 <ul>
   {#each dbMsgs as msg}
-    <li>{msg}</li>
+    <li>
+      <h4>{msg.name}</h4>
+      {#each msg.runes as r, index}
+        {#if index > 0}
+          ,&nbsp;
+        {/if}
+        <span>{Rune[r]}</span>
+      {/each}
+      <div>Need level: {msg.level}</div>
+    </li>
   {/each}
 </ul>
 

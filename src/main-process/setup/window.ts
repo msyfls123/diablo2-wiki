@@ -32,11 +32,12 @@ export function initializeWindow(database: DataBase): void {
       window.webContents.send('tick', msg)
     })
     database.db.$.subscribe(e => {
-      window.webContents.send('db-message', JSON.stringify(e.rxDocument))
+      window.webContents.send('db-message', [JSON.stringify(e.rxDocument)])
     })
     database.db.items.upsert({
-      key: 'what',
-      value: 'is me',
+      name: 'Enigma',
+      level: 65,
+      runes: [31, 6, 30],
     })
     // database.db.items.find().exec().then(data => {
     //   window.webContents.send('db-message', data.map(d => JSON.stringify(d.toJSON())))
