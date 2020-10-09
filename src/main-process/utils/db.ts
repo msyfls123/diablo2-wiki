@@ -3,10 +3,15 @@ import {
   addRxPlugin,
   RxDatabase,
   removeRxDatabase,
+  MangoQuery,
 } from 'rxdb'
 import leveldown from 'leveldown'
 import levelDBAdapter from 'pouchdb-adapter-leveldb'
-import { dialog } from 'electron'
+import { BrowserWindow, dialog } from 'electron'
+import crypto from 'crypto'
+
+import { Subscription, asyncScheduler } from 'rxjs'
+import { observeOn } from 'rxjs/operators'
 
 addRxPlugin(levelDBAdapter)
 
@@ -25,6 +30,7 @@ export class DataBase {
   public db: RxDatabase
   public constructor(name: string, wipeOldVersion = false) {
     this.name = name
+    this.subscribers = new Map()
     this.create(name, wipeOldVersion)
   }
 
@@ -44,5 +50,42 @@ export class DataBase {
 
   public destroy(): Promise<boolean> {
     return this.db && this.db.destroy()
+  }
+
+  private subscribers: Map<number, Map<string, Subscription>>
+
+  public subscribe(window: BrowserWindow, collection: string, query: MangoQuery): string {
+    const md5Sum = crypto.createHash('md5')
+    md5Sum.update(JSON.stringify(query))
+    const md5Key = md5Sum.digest('hex')
+    const key = `${window.id}-${collection}-${md5Key}`
+
+    const subscribers = this.subscribers.get(window.id) || new Map
+    const subscriber = subscribers.get(key)
+    if (subscriber) {
+      subscriber.unsubscribe()
+      subscribers.delete(key)
+      console.log('unsubscribe')
+    }
+    subscribers.set(
+      key,
+      this.db[collection].find(query).$.pipe(
+        observeOn(asyncScheduler)
+      ).subscribe(data => {
+        window.webContents.send(key, data.map(d => d.toJSON()))
+      })
+    )
+    this.subscribers.set(window.id, subscribers)
+    return key
+  }
+
+  public unsubscribe(window: BrowserWindow): void {
+    const subscribers = this.subscribers.get(window.id)
+    if (subscribers) {
+      Array.from(subscribers.values()).forEach((s) => {
+        s.unsubscribe()
+      })
+      subscribers.clear()
+    }
   }
 }

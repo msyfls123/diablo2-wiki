@@ -22,15 +22,10 @@
     distinctUntilChanged,
   } from 'rxjs/operators'
   import { ipcRenderer } from 'electron'
-  import { Rune } from '../../constants/rune'
+  import Query from './Query.svelte'
 
   let year: number = 0
   let messages = []
-  let dbMsgs: Array<{
-    name: string
-    level: number
-    runes: Rune[]
-  }> = []
   export let name: string
 
   const input$ = new Subject()
@@ -41,11 +36,6 @@
 
   ipcRenderer.on('tick', (e, msg) => {
     messages = [msg]
-  })
-
-  ipcRenderer.on('db-message', (e, msg) => {
-    console.log(msg)
-    dbMsgs = [...dbMsgs, ...msg.map(JSON.parse)]
   })
 
   $: input$.next(year)
@@ -76,22 +66,9 @@
 <div class="test-bg"></div>
 
 <ul>
-  {#each dbMsgs as msg}
-    <li>
-      <h4>{msg.name}</h4>
-      {#each msg.runes as r, index}
-        {#if index > 0}
-          ,&nbsp;
-        {/if}
-        <span>{Rune[r]}</span>
-      {/each}
-      <div>Need level: {msg.level}</div>
-    </li>
-  {/each}
-</ul>
-
-<ul>
   {#each messages as msg}
     <li>{JSON.stringify(msg)}</li>
   {/each}
 </ul>
+
+<Query/>
