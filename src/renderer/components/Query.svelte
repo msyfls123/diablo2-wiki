@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import { ipcRenderer } from 'electron'
+  import { ipcRenderer, remote } from 'electron'
   import { Rune } from '../../constants/rune'
 
   const query = {
@@ -17,7 +17,7 @@
     level: number
     runes: Rune[]
   }> = []
-  ipcRenderer.invoke('db-query', 'items', query).then(key => {
+  ipcRenderer.invoke(`db-query-${remote.getCurrentWindow().id}`, 'items', query).then(key => {
     ipcRenderer.on(key, (e, data) => {
       list = data
     })

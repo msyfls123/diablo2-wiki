@@ -65,7 +65,6 @@ export class DataBase {
     if (subscriber) {
       subscriber.unsubscribe()
       subscribers.delete(key)
-      console.log('unsubscribe')
     }
     subscribers.set(
       key,

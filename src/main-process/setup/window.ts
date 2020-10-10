@@ -10,6 +10,7 @@ export function initializeWindow(database: DataBase): void {
     webPreferences: {
       devTools: isDevMode,
       nodeIntegration: true,
+      enableRemoteModule: true,
     }
     // frame: false,
     // titleBarStyle: 'hiddenInset',
@@ -26,7 +27,7 @@ export function initializeWindow(database: DataBase): void {
       mode: 'detach',
     });
   }
-  ipcMain.handle('db-query', (e, collection, query) => {
+  ipcMain.handle(`db-query-${window.id}`, (e, collection, query) => {
     return database.subscribe(window, collection, query)
   })
 
