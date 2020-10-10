@@ -118,6 +118,8 @@ const mainConfig = {
   external: [
     'electron',
     'electron-connect',
+    'rxjs',
+    'rxjs/operators',
     'rxdb',
     'leveldown',
     'pouchdb-adapter-leveldb',
