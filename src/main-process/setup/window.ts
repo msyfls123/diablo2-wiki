@@ -30,6 +30,9 @@ export function initializeWindow(database: DataBase): void {
   ipcMain.handle(`db-query-${window.id}`, (e, collection, query) => {
     return database.subscribe(window, collection, query)
   })
+  ipcMain.on('db-query-unsubscribe', (e, key) => {
+    database.unsubscribe(window.id, key)
+  })
 
   let subscriber: Subscription
   window.webContents.once('did-finish-load', () => {
@@ -45,13 +48,16 @@ export function initializeWindow(database: DataBase): void {
         level: 27,
         runes: [8, 3, 7, 12],
       })
-    }, 7000)
+    }, 5000)
+  })
+  window.webContents.on('did-finish-load', () => {
+    database.unsubscribeAll(window)
   })
   window.on('close', () => {
     if (subscriber) {
       subscriber.unsubscribe()
     }
-    database.unsubscribe(window)
+    database.unsubscribeAll(window)
   })
   window.show()
 }

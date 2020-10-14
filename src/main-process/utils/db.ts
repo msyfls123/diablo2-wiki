@@ -58,14 +58,10 @@ export class DataBase {
     const md5Sum = crypto.createHash('md5')
     md5Sum.update(JSON.stringify(query))
     const md5Key = md5Sum.digest('hex')
-    const key = `${window.id}-${collection}-${md5Key}`
+    const timestamp = (new Date()).getTime()
+    const key = `${window.id}-${collection}-${md5Key}-${timestamp}`
 
     const subscribers = this.subscribers.get(window.id) || new Map
-    const subscriber = subscribers.get(key)
-    if (subscriber) {
-      subscriber.unsubscribe()
-      subscribers.delete(key)
-    }
     subscribers.set(
       key,
       this.db[collection].find(query).$.pipe(
@@ -78,7 +74,17 @@ export class DataBase {
     return key
   }
 
-  public unsubscribe(window: BrowserWindow): void {
+  public unsubscribe(windowId: number, key: string): void {
+    const subscribers = this.subscribers.get(windowId) || new Map
+    const subscriber = subscribers.get(key)
+    if (subscriber) {
+      subscriber.unsubscribe()
+      subscribers.delete(key)
+    }
+    this.subscribers.set(windowId, subscribers)
+  }
+
+  public unsubscribeAll(window: BrowserWindow): void {
     const subscribers = this.subscribers.get(window.id)
     if (subscribers) {
       Array.from(subscribers.values()).forEach((s) => {
