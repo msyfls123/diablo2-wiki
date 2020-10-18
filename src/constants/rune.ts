@@ -34,4 +34,7 @@ export enum Rune {
   Zod,
 }
 
-export const Runes = Object.keys(Rune).filter(r => typeof r === 'number').sort()
+export const Runes = Object.keys(Rune)
+  .map(r => Number(r))
+  .filter(r => Number.isSafeInteger(r))
+  .sort((a, b) => a - b)

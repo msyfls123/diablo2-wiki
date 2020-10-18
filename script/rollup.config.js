@@ -60,6 +60,11 @@ function genPageConfig(fileBaseName) {
         template: path.join(srcTemplateDir, fileBaseName + '.html'),
         fileName: fileBaseName + '.html',
         externals: [
+          {
+            type: 'css',
+            file: "../assets/g10.css",
+            pos: 'before',
+          },
           ...(useBundledRx ? [{
             type: 'js',
             file: "../assets/rxjs.umd.min.js",
@@ -101,6 +106,10 @@ const mainConfig = {
         {
           src: path.join(srcDir, 'renderer/images/**/*'),
           dest: path.join(outDir, 'images'),
+        },
+        {
+          src: path.join(projectDir, 'node_modules/carbon-components-svelte/css/g10.css'),
+          dest: path.join(outDir, 'assets'),
         },
         ...(useBundledRx ? [{
           src: path.join(projectDir, 'node_modules/rxjs/bundles/rxjs.umd.min.js'),
