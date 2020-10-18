@@ -17,7 +17,7 @@
   const runes = writable([undefined])
 </script>
 
-<Form on:submit={(e) => { console.log(e.target)}}>
+<Form on:submit={(e) => { console.log($runes)}}>
   <Grid>
     {#each $runes as rune, index}
       <FormGroup>
@@ -29,8 +29,8 @@
               selected={rune}
               required={true}
               on:change={(e) => {
-                if (!e.currentTarget) { return }
-                const val = Number(e.currentTarget.value)
+                if (!e.detail) { return }
+                const val = Number(e.detail)
                 runes.update(items => {
                   return [
                     ...items.slice(0, index),
