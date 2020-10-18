@@ -9,6 +9,7 @@ import commonjs from '@rollup/plugin-commonjs'
 import replace from '@rollup/plugin-replace'
 import css from "rollup-plugin-css-porter"
 import copy from 'rollup-plugin-copy'
+import { terser } from 'rollup-plugin-terser'
 
 import {
   srcDir,
@@ -41,6 +42,7 @@ const common = {
     commonjs({
       include: /node_modules/,
     }),
+    ...(isProd ? [terser()] : []),
   ],
 }
 
@@ -82,6 +84,7 @@ function genPageConfig(fileBaseName) {
       format: 'iife',
       dir: outPagesDir,
       sourcemap: isDev ? 'inline' : false,
+      compact: isProd,
       globals: {
         electron: "require('electron')",
         ...(useBundledRx ? {
@@ -123,6 +126,7 @@ const mainConfig = {
     format: 'cjs',
     dir: outDir,
     sourcemap: isDev ? 'inline' : false,
+    compact: isProd,
   },
   external: [
     'electron',
