@@ -30,6 +30,9 @@ export function initializeWindow(database: DataBase): void {
   ipcMain.handle(`db-query-${window.id}`, (e, collection, query) => {
     return database.subscribe(window, collection, query)
   })
+  ipcMain.handle(`db-upsert-${window.id}`, (e, collection, data) => {
+    return database.upsert(collection, data).then(document => document.toJSON())
+  })
   ipcMain.on('db-query-unsubscribe', (e, key) => {
     database.unsubscribe(window.id, key)
   })
@@ -42,17 +45,11 @@ export function initializeWindow(database: DataBase): void {
       window.webContents.send('tick', msg)
     })
     
-    setTimeout(() => {
-      database.db.items.upsert({
-        name: 'Insight',
-        level: 27,
-        runes: [8, 3, 7, 12],
-      })
-    }, 5000)
+    window.webContents.on('did-finish-load', () => {
+      database.unsubscribeAll(window)
+    })
   })
-  window.webContents.on('did-finish-load', () => {
-    database.unsubscribeAll(window)
-  })
+
   window.on('close', () => {
     if (subscriber) {
       subscriber.unsubscribe()

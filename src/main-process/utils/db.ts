@@ -4,6 +4,7 @@ import {
   RxDatabase,
   removeRxDatabase,
   MangoQuery,
+  RxDocument,
 } from 'rxdb'
 import leveldown from 'leveldown'
 import levelDBAdapter from 'pouchdb-adapter-leveldb'
@@ -92,5 +93,9 @@ export class DataBase {
       })
       subscribers.clear()
     }
+  }
+
+  public upsert(collection: string, data: any): Promise<RxDocument> {
+    return this.db[collection].upsert(data)
   }
 }

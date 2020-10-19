@@ -4,7 +4,7 @@ import { app } from 'electron'
 import { Runes } from '../../constants/rune'
 import { isDevMode } from '../../constants'
 
-const shouldWipeOldDataBase = true
+const shouldWipeOldDataBase = false
 
 export async function initializeDatabase(): Promise<DataBase> {
   const dbName = path.join(app.getPath('userData'), 'test-db')
