@@ -1,10 +1,17 @@
 <style lang="scss">
   :global(.icon) {
     margin-top: 15px;
+    &:hover {
+      cursor: pointer;
+    }
   }
   :global(.actions) {
     display: flex;
     align-items: center;
+    perspective: 180px;
+  }
+  :global(.btn-submit) {
+    margin-top: 15px;
   }
   .notifications {
     position: fixed;
@@ -32,6 +39,7 @@
 
   import { Runes, Rune } from '../../constants/rune'
 
+  export let selected = writable(null)
   const runes = writable([1])
   let notifications = []
   let name = ''
@@ -57,6 +65,13 @@
       level = 1
     })
   }
+
+  selected.subscribe((item) => {
+    if (!item) { return }
+    name = item.name
+    level = item.level
+    runes.set(item.runes)
+  })
 </script>
 
 <div class="notifications">
@@ -133,7 +148,7 @@
           </Column>
         </Row>
       {/each}
-      <Button icon={Add32} size="small" kind="secondary" class="icon" on:click={() => {
+      <Button icon={Add32} size="small" kind="secondary" class="btn-submit" on:click={() => {
         runes.update(items => [
           ...items,
           1,

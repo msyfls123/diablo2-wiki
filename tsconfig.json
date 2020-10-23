@@ -2,7 +2,12 @@
   "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "allowJs": true
+    "allowJs": true,
+    "paths": {
+      "@src/*": ["./src/*"],
+      "@main/*": ["./src/main-process/*"],
+      "@renderer/*": ["./src/renderer/*"]
+    }
   },
   "include": [
     "src/**/*.ts",

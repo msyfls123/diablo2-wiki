@@ -1,7 +1,9 @@
 <script lang='ts'>
   import { ipcRenderer, remote } from 'electron'
-  import { Rune } from '../../constants/rune'
+  import { createEventDispatcher } from 'svelte'
   import { writable } from 'svelte/store'
+  import { Rune } from '@src/constants/rune'
+  import type { RuneItem } from '@src/constants/rune'
 
   const genQuery = (runeNo) => ({
     selector: {
@@ -11,13 +13,10 @@
     },
     // limit: 2,
   })
+  const dispatch = createEventDispatcher()
   const runeNumber = writable(7)
   let currentKey = null
-  let list: Array<{
-    name: string
-    level: number
-    runes: Rune[]
-  }> = []
+  let list: Array<RuneItem> = []
   
   runeNumber.subscribe(current => {
     if (!Number.isSafeInteger(current)) { return }
@@ -46,17 +45,37 @@
     runeNumber.set(Number(e.currentTarget.value))
   }}/>
 </label>
-<ul>
-  {#each list as msg}
-    <li>
-      <h4>{msg.name}</h4>
-      {#each msg.runes as r, index}
+<ul class="runeword-list">
+  {#each list as item}
+    <li
+      class="runeword-item"
+      on:click={() => dispatch('select-item', item)}
+    >
+      <h4>{item.name}</h4>
+      {#each item.runes as r, index}
         {#if index > 0}
           ,&nbsp;
         {/if}
         <span>{Rune[r]}({r})</span>
       {/each}
-      <div>Required Level: {msg.level}</div>
+      <div>Required Level: {item.level}</div>
     </li>
   {/each}
 </ul>
+
+<style type="scss">
+  .runeword-list {
+    margin-top: 20px;
+  }
+  .runeword-item {
+    padding: 15px 10px;
+    border-bottom: thin solid #ddd;
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(#ddd, .4);
+    }
+    h4 {
+      color: goldenrod;
+    }
+  }
+</style>

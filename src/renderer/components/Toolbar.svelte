@@ -1,6 +1,6 @@
 <style type="scss">
   :root {
-    --unique: rgb(201, 104, 8, .46)
+    --unique: goldenrod;
   }
   input {
     font-size: 20px;
@@ -19,6 +19,7 @@
 </style>
 
 <script lang="ts">
+  import { writable } from 'svelte/store'
   import { Subject } from 'rxjs'
   import {
     debounceTime,
@@ -28,10 +29,12 @@
   import Query from './Query.svelte'
   import Mutation from './Mutation.svelte'
   import { Accordion, AccordionItem } from 'carbon-components-svelte/src/Accordion'
+  import type { RuneItem } from '@src/constants/rune'
 
   let year: number = 0
   let messages = []
   export let name: string
+  const currentRuneWord = writable<RuneItem | null>(null)
 
   const input$ = new Subject()
   const result$ = input$.pipe(
@@ -82,10 +85,14 @@
     </AccordionItem>
   
     <AccordionItem title="Mutation" open>
-      <Mutation/>
+      <Mutation selected={currentRuneWord}/>
     </AccordionItem>
     <AccordionItem title="Query" open>
-      <Query/>
+      <Query
+        on:select-item={(e) => {
+          currentRuneWord.set(e.detail)
+        }}
+      />
     </AccordionItem>
   </Accordion>
 </main>

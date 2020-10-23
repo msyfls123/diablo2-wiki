@@ -10,6 +10,7 @@ import replace from '@rollup/plugin-replace'
 import css from "rollup-plugin-css-porter"
 import copy from 'rollup-plugin-copy'
 import { terser } from 'rollup-plugin-terser'
+import alias from '@rollup/plugin-alias'
 
 import {
   srcDir,
@@ -34,6 +35,25 @@ const common = {
     }),
     typescript({
       sourceMap: isDev,
+    }),
+    alias({
+      entries: [
+        {
+          find: '@src',
+          replacement: srcDir
+        },
+        {
+          find: '@main',
+          replacement: path.join(srcDir, 'main-process')
+        },
+        {
+          find: '@renderer',
+          replacement: path.join(srcDir, 'renderer')
+        },
+      ],
+      customResolver: nodeResolve({
+        extensions: ['.mjs', '.ts', '.tsx', '.json', '.sass', '.scss']
+      })
     }),
     nodeResolve({
       preferBuiltins: true,

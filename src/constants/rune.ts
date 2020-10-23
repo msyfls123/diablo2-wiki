@@ -38,3 +38,9 @@ export const Runes = Object.keys(Rune)
   .map(r => Number(r))
   .filter(r => Number.isSafeInteger(r))
   .sort((a, b) => a - b)
+
+export type RuneItem = {
+  name: string
+  level: number
+  runes: Rune[]
+}
