@@ -3,6 +3,7 @@ import { isDevMode } from '../../constants'
 import { Subscription, timer } from 'rxjs'
 import { map } from 'rxjs/operators'
 import type { DataBase } from '../utils/db'
+import type { BrowserWindowConstructorOptions } from 'electron/main'
 
 export function initializeWindow(database: DataBase): void {
   const window = new BrowserWindow({
@@ -11,6 +12,7 @@ export function initializeWindow(database: DataBase): void {
       devTools: isDevMode,
       nodeIntegration: true,
       enableRemoteModule: true,
+      nativeWindowOpen: true,
     }
     // frame: false,
     // titleBarStyle: 'hiddenInset',
@@ -48,6 +50,30 @@ export function initializeWindow(database: DataBase): void {
     window.webContents.on('did-finish-load', () => {
       database.unsubscribeAll(window)
     })
+  })
+
+  window.webContents.on('new-window', (event, url, frameName, disposition, windowOptions) => {
+    if (frameName === 'windowPortal') {
+      event.preventDefault()
+      const options: BrowserWindowConstructorOptions = {
+        ...windowOptions,
+        frame: false,
+        titleBarStyle: 'default',
+        skipTaskbar: true,
+        show: false,
+        width: 0,
+        height: 0,
+        center: true,
+        webPreferences: {
+          nodeIntegration: true,
+          enableRemoteModule: true,
+          affinity: 'windowPortal',
+        }
+      }
+      const newWindow = new BrowserWindow(options)
+      newWindow.showInactive()
+      event.newGuest = newWindow
+    }
   })
 
   window.on('close', () => {
