@@ -30,9 +30,12 @@
   import Mutation from './Mutation.svelte'
   import { Accordion, AccordionItem } from 'carbon-components-svelte/src/Accordion'
   import type { RuneItem } from '@src/constants/rune'
+  import { Button } from 'carbon-components-svelte/src/Button'
+  import Portal from './Portal.svelte'
 
   let year: number = 0
   let messages = []
+  let showModal = false
   export let name: string
   const currentRuneWord = writable<RuneItem | null>(null)
 
@@ -55,7 +58,21 @@
 <main class='test-main'>
   <h1>Welcome to {name}!</h1>
   <Accordion>
-    <AccordionItem title="Introduction" open>
+    <AccordionItem title="Open New Window" open>
+      <Button on:click={() => {
+        showModal = !showModal
+      }}>
+        {showModal ? 'Hide' : 'Show'} New Window
+      </Button>
+      {#if showModal}
+        <Portal>
+          <Button on:click={() => {
+            showModal = false
+          }}>Close</Button>
+        </Portal>
+      {/if}
+    </AccordionItem>
+    <AccordionItem title="Introduction">
       <label>
         How many years have you played Diablo series? 
         <input
@@ -76,7 +93,7 @@
       </p>
       <div class="test-bg"></div>
     </AccordionItem>
-    <AccordionItem title="Info" open>
+    <AccordionItem title="Info">
       <ul>
         {#each messages as msg}
           <li>{JSON.stringify(msg)}</li>
