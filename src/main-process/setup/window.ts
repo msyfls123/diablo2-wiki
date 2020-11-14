@@ -20,6 +20,7 @@ export function initializeWindow(database: DataBase): void {
 
   // hot reload
   if (isDevMode) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     require('electron-connect').client.create(window)
   }
 

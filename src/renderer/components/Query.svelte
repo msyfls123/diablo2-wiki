@@ -36,14 +36,21 @@
       })
     })
   })
+
+  type InputEvent = Event & {
+    target: EventTarget & HTMLInputElement
+    currentTarget: EventTarget & HTMLInputElement
+  }
+
+  const handleInput = (e: InputEvent) => {
+    runeNumber.set(Number(e.target.value))
+  }
   
 </script>
 
 <label>
   Which rune do you have?
-  <input type="number" min={0} value={$runeNumber} on:input={(e) => {
-    runeNumber.set(Number(e.currentTarget.value))
-  }}/>
+  <input type="number" min={0} value={$runeNumber} on:input={handleInput}/>
 </label>
 <ul class="runeword-list">
   {#each list as item}

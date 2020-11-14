@@ -47,7 +47,8 @@
     "build": "cross-env NODE_ENV=production rollup --config ./script/rollup.config.js",
     "publish": "cross-env ELECTRON_GET_USE_PROXY=true ts-node ./script/build.ts --verbose",
     "serve": "electron .",
-    "svelte-check": "svelte-check"
+    "svelte-check": "svelte-check",
+    "eslint": "eslint ./src ./script"
   },
   "repository": {
     "type": "git",

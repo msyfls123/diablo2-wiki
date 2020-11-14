@@ -95,7 +95,7 @@ export class DataBase {
     }
   }
 
-  public upsert(collection: string, data: any): Promise<RxDocument> {
+  public upsert(collection: string, data: Record<string, unknown>): Promise<RxDocument> {
     return this.db[collection].upsert(data)
   }
 }
