@@ -30,15 +30,38 @@ export function initializeWindow(database: DataBase): void {
       mode: 'detach',
     });
   }
-  ipcMain.handle(`db-query-${window.id}`, (e, collection, query) => {
-    return database.subscribe(window, collection, query)
-  })
   ipcMain.handle(`db-upsert-${window.id}`, (e, collection, data) => {
     return database.upsert(collection, data).then(document => document.toJSON())
   })
-  ipcMain.on('db-query-unsubscribe', (e, key) => {
-    database.unsubscribe(window.id, key)
-  })
+  // ipcMain.on('db-query-unsubscribe', (e, key) => {
+  //   database.unsubscribe(window.id, key)
+  // })
+
+  window.webContents
+    .on('ipc-message', (e, channel, ...args) => {
+      switch (channel) {
+        case 'db-query-unsubscribe':
+          database.unsubscribe(window.id, args[0])
+          break;
+      
+        default:
+          break;
+      }
+    })
+    .on('ipc-message-sync', (e, channel, ...args) => {
+      switch (channel) {
+        case 'db-query':
+          e.returnValue = database.subscribe(window, args[0], args[1])
+          break;
+
+        // case 'db-upsert':
+        //   e.returnValue = database.upsert(args[0], args[1]).then(document => document.toJSON())
+        //   break;
+
+        default:
+          break;
+      }
+    })
 
   let subscriber: Subscription
   window.webContents.once('did-finish-load', () => {

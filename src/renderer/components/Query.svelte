@@ -22,18 +22,16 @@
     if (!Number.isSafeInteger(current)) { return }
     if (currentKey) {
       ipcRenderer.send('db-query-unsubscribe', currentKey)
+      ipcRenderer.removeAllListeners(currentKey)
       currentKey = null
       list = []
     }
     const query = genQuery(current)
-    ipcRenderer.invoke(
-      `db-query-${remote.getCurrentWindow().id}`,
-      'items', query
-    ).then(key => {
-      currentKey = key
-      ipcRenderer.on(key, (e, data) => {
-        list = data
-      })
+    currentKey = ipcRenderer.sendSync(
+      'db-query', 'items', query
+    )
+    ipcRenderer.on(currentKey, (e, data) => {
+      list = data
     })
   })
 
