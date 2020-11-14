@@ -95,7 +95,6 @@ export function initializeWindow(database: DataBase): void {
         }
       }
       const newWindow = new BrowserWindow(options)
-      newWindow.showInactive()
       event.newGuest = newWindow
     }
   })

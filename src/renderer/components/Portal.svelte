@@ -56,7 +56,10 @@
     const { clientWidth, clientHeight } = ref
     const code = `
       requestAnimationFrame(() => {
-        window.require('electron').remote.getCurrentWindow().setSize(${clientWidth}, ${clientHeight});
+        var win = window.require('electron').remote.getCurrentWindow();
+        win.showInactive();
+        win.setPosition(20, 20);
+        win.setSize(${clientWidth}, ${clientHeight});
       })
     `
     const script = windowRef.document.createElement('script')
