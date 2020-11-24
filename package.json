@@ -16,7 +16,7 @@
     "carbon-components-svelte": "^0.18.0",
     "cross-env": "^7.0.2",
     "electron": "10.1.2",
-    "electron-builder": "^22.8.1",
+    "electron-builder": "22.8.1",
     "electron-connect": "^0.6.3",
     "eslint": "^7.9.0",
     "gulp": "^4.0.2",
@@ -44,8 +44,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cross-env NODE_ENV=development ts-node ./script/watch.ts",
-    "build": "cross-env NODE_ENV=production rollup --config ./script/rollup.config.js",
-    "publish": "cross-env ELECTRON_GET_USE_PROXY=true ts-node ./script/build.ts --verbose",
+    "compile": "cross-env NODE_ENV=production rollup --config ./script/rollup.config.js",
+    "build": "cross-env ELECTRON_GET_USE_PROXY=true USE_HARD_LINKS=false ts-node ./script/build.ts --verbose",
     "serve": "electron .",
     "svelte-check": "svelte-check",
     "eslint": "eslint ./src ./script"

@@ -51,7 +51,7 @@ export function initializeWindow(database: DataBase): void {
     .on('ipc-message-sync', (e, channel, ...args) => {
       switch (channel) {
         case 'db-query':
-          e.returnValue = database.subscribe(window, args[0], args[1])
+          e.returnValue = database.subscribe(window, args[0], args[1]) as any
           break;
 
         // case 'db-upsert':
