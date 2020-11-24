@@ -16,7 +16,7 @@
     "carbon-components-svelte": "^0.18.0",
     "cross-env": "^7.0.2",
     "electron": "10.1.2",
-    "electron-builder": "22.8.1",
+    "electron-builder": "^22.8.1",
     "electron-connect": "^0.6.3",
     "eslint": "^7.9.0",
     "gulp": "^4.0.2",
