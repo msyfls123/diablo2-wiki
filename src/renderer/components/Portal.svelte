@@ -13,8 +13,8 @@
   .portal-clone { display: none; }
 </style>
 
-<script context="module">
-  function copyStyles(sourceDoc, targetDoc) {
+<script context="module" lang="ts">
+  function copyStyles(sourceDoc: Document, targetDoc: Document) {
     Array.from(sourceDoc.styleSheets).forEach(styleSheet => {
       if (styleSheet.cssRules) { // for <style> elements
         const newStyleEl = sourceDoc.createElement('style');
@@ -36,9 +36,16 @@
   }
 </script>
 
-<script>
+<script lang="ts">
   import { onMount, onDestroy } from 'svelte'
-  let windowRef
+  import type Electron from 'electron'
+
+  type PortalWindow = Window & {
+    require: (...args: any) => {
+      remote: Electron.Remote
+    }
+  }
+  let windowRef: PortalWindow
   let portal
   let ref
   
@@ -47,24 +54,21 @@
     portal.style.display = 'inline-block'
     portal.className = 'portal'
 
-    windowRef = window.open('about:blank', 'windowPortal')
+    windowRef = window.open('about:blank', 'windowPortal') as unknown as PortalWindow
     windowRef.document.body.appendChild(portal)
     portal.appendChild(ref)
 
     copyStyles(document, windowRef.document)
 
     const { clientWidth, clientHeight } = ref
-    const code = `
-      requestAnimationFrame(() => {
-        var win = window.require('electron').remote.getCurrentWindow();
-        win.showInactive();
-        win.setPosition(20, 20);
-        win.setSize(${clientWidth}, ${clientHeight});
-      })
-    `
-    const script = windowRef.document.createElement('script')
-    script.innerHTML = code
-    windowRef.document.body.appendChild(script)
+    windowRef.requestAnimationFrame(() => {
+      const { remote } = windowRef.require('electron')
+      const win = remote.getCurrentWindow()
+      const workArea = remote.screen.getDisplayNearestPoint(remote.screen.getCursorScreenPoint()).bounds
+      win.showInactive();
+      win.setPosition(workArea.x + 50, workArea.y + 50);
+      win.setSize(clientWidth, clientHeight);
+    })
   })
   
   onDestroy(() => {
