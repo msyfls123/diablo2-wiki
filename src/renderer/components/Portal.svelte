@@ -3,14 +3,12 @@
   https://stackoverflow.com/questions/62733094/implement-a-portal-in-svelte
   https://stackoverflow.com/questions/58187495/create-window-with-attached-svelte-component-and-in-the-same-javascript-context
 -->
-<div class="portal-clone">
-  <div bind:this={ref}>
-    <slot></slot>
-  </div>
+<div bind:this={portal} class="portal">
+  <slot></slot>
 </div>
 
 <style>
-  .portal-clone { display: none; }
+  .portal { display: inline-block; }
 </style>
 
 <script context="module" lang="ts">
@@ -46,21 +44,14 @@
     }
   }
   let windowRef: PortalWindow
-  let portal
-  let ref
+  let portal: HTMLDivElement
   
   onMount(() => {
-    portal = document.createElement('div')
-    portal.style.display = 'inline-block'
-    portal.className = 'portal'
-
     windowRef = window.open('about:blank', 'windowPortal') as unknown as PortalWindow
-    windowRef.document.body.appendChild(portal)
-    portal.appendChild(ref)
-
     copyStyles(document, windowRef.document)
+    windowRef.document.body.appendChild(portal)
 
-    const { clientWidth, clientHeight } = ref
+    const { clientWidth, clientHeight } = portal
     windowRef.requestAnimationFrame(() => {
       const { remote } = windowRef.require('electron')
       const win = remote.getCurrentWindow()
